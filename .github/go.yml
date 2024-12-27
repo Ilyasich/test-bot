@@ -1,0 +1,44 @@
+name: Go Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.23'  # Укажите вашу версию Go
+
+    - name: Install dependencies
+      run: |
+        go mod tidy  # Устанавливаем зависимости, если они есть в go.mod
+
+    - name: Build
+      run: |
+        go build -v ./...  # Строим проект
+
+    - name: Run tests
+      run: |
+        go test -v ./...  # Запуск тестов
+
+    - name: Deploy to Google Cloud Functions (optional)
+      if: github.ref == 'refs/heads/main'  # Деплой только на ветке main
+      run: |
+        gcloud functions deploy telegram-bot \
+          --runtime go120 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --entry-point TelegramWebhookHandler \
+          --region us-central1
