@@ -27,14 +27,14 @@ jobs:
 
     - name: Build
       run: |
-        go build -v ./...  # Строим проект
+        go build -v ./...  # Строим проект.
 
     - name: Run tests
       run: |
         go test -v ./...  # Запуск тестов
 
     - name: Deploy to Google Cloud Functions (optional)
-      if: github.ref == 'refs/heads/main'  # Деплой только на ветке main
+      if: github.ref == 'refs/heads/main'  # Деплой только на ветке main.
       run: |
         gcloud functions deploy telegram-bot \
           --runtime go120 \
