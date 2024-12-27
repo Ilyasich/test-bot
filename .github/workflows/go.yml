@@ -1,44 +1,57 @@
-name: Go Build and Test
+name: Go Build and Deploy to Google Cloud Functions
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # Триггер для деплоя только на ветке main.
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    # Шаг 1: Проверка кода
     - name: Check out code
       uses: actions/checkout@v3
 
+    # Шаг 2: Установка Go
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
         go-version: '1.23'  # Укажите вашу версию Go.
 
+    # Шаг 3: Установка зависимостей
     - name: Install dependencies
       run: |
-        go mod tidy  # Устанавливаем зависимости, если они есть в go.mod
+        go mod tidy
 
-    - name: Build
+    # Шаг 4: Сборка проекта
+    - name: Build Go application
       run: |
+<<<<<<< HEAD
         go build -v ./...  # Строим проект.
+=======
+        go build -v ./...
+>>>>>>> ba2458c (add yaml)
 
-    - name: Run tests
-      run: |
-        go test -v ./...  # Запуск тестов
+    # Шаг 5: Установка Google Cloud SDK
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}  # ID вашего Google Cloud проекта
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}  # Секрет с вашим JSON-ключом
 
+<<<<<<< HEAD
     - name: Deploy to Google Cloud Functions (optional)
       if: github.ref == 'refs/heads/main'  # Деплой только на ветке main.
+=======
+    # Шаг 6: Деплой на Google Cloud Functions
+    - name: Deploy to Google Cloud Functions
+>>>>>>> ba2458c (add yaml)
       run: |
         gcloud functions deploy telegram-bot \
-          --runtime go120 \
+          --runtime go116 \  # Указываем нужную версию Go (например, go116 для Go 1.16)
           --trigger-http \
           --allow-unauthenticated \
           --entry-point TelegramWebhookHandler \
-          --region us-central1
+          --region us-central1  # Выберите регион, где хотите развернуть функцию
