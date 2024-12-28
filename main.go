@@ -91,6 +91,7 @@ func SendStartMessage(bot *tgbotapi.BotAPI, chatID int64) error {
 	return nil
 }
 
+//другой код
 // package main
 
 // import (
