@@ -3,14 +3,14 @@ name: Go Build and Deploy to Google Cloud Functions
 on:
   push:
     branches:
-      - main  # Триггер для деплоя только на ветке main.
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    # Шаг 1: Проверка кода:
+    # Шаг 1: Проверка кода
     - name: Check out code
       uses: actions/checkout@v3
 
@@ -18,32 +18,35 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: '1.20'  # Используем Go 1.20
+        go-version: '1.20'
 
     # Шаг 3: Установка зависимостей
     - name: Install dependencies
-      run: |
-        go mod tidy
+      run: go mod tidy
 
     # Шаг 4: Сборка проекта
     - name: Build Go application
-      run: |
-        go build -v ./...
+      run: go build -v ./...
 
-    # Шаг 5: Установка Google Cloud SDK
+    # Шаг 5: Аутентификация в Google Cloud
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}
+
+    # Шаг 6: Настройка Google Cloud SDK
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}  # ID вашего Google Cloud проекта
-        credentials_json: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}  # Секрет с вашим JSON-ключом
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-    # Шаг 6: Деплой в Google Cloud Functions
+    # Шаг 7: Деплой в Google Cloud Functions
     - name: Deploy to Google Cloud Functions
-      if: github.ref == 'refs/heads/main'  # Деплой только на ветке main.
+      if: github.ref == 'refs/heads/main'
       run: |
         gcloud functions deploy telegram-bot \
-          --runtime go120 \  # Используем Go 1.20
+          --runtime go120 \
           --trigger-http \
           --allow-unauthenticated \
           --entry-point TelegramWebhookHandler \
-          --region us-central1  # Выберите регион, где хотите развернуть функцию
+          --region us-central1
