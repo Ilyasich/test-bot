@@ -18,7 +18,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
-        go-version: '1.23'  # Укажите вашу версию Go.
+        go-version: '1.20'  # Используем Go 1.20
 
     # Шаг 3: Установка зависимостей
     - name: Install dependencies
@@ -28,11 +28,7 @@ jobs:
     # Шаг 4: Сборка проекта
     - name: Build Go application
       run: |
-<<<<<<< HEAD
-        go build -v ./...  # Строим проект.
-=======
         go build -v ./...
->>>>>>> ba2458c (add yaml)
 
     # Шаг 5: Установка Google Cloud SDK
     - name: Set up Google Cloud SDK
@@ -41,17 +37,13 @@ jobs:
         project_id: ${{ secrets.GCP_PROJECT_ID }}  # ID вашего Google Cloud проекта
         credentials_json: ${{ secrets.GOOGLE_CLOUD_CREDENTIALS }}  # Секрет с вашим JSON-ключом
 
-<<<<<<< HEAD
-    - name: Deploy to Google Cloud Functions (optional)
-      if: github.ref == 'refs/heads/main'  # Деплой только на ветке main.
-=======
-    # Шаг 6: Деплой на Google Cloud Functions
+    # Шаг 6: Деплой в Google Cloud Functions
     - name: Deploy to Google Cloud Functions
->>>>>>> ba2458c (add yaml)
+      if: github.ref == 'refs/heads/main'  # Деплой только на ветке main.
       run: |
         gcloud functions deploy telegram-bot \
-          --runtime go116 \  # Указываем нужную версию Go (например, go116 для Go 1.16)
+          --runtime go120 \  # Используем Go 1.20
           --trigger-http \
           --allow-unauthenticated \
           --entry-point TelegramWebhookHandler \
-          --region us-central1  # Выберите регион, где хотите развернуть функцию.
+          --region us-central1  # Выберите регион, где хотите развернуть функцию
