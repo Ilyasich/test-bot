@@ -40,7 +40,7 @@ jobs:
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-    # Шаг 7: Деплой в Google Cloud Functions
+    # Шаг 7: Деплой в Google Cloud Functions.
     - name: Deploy to Google Cloud Functions
       if: github.ref == 'refs/heads/main'
       run: |
@@ -49,4 +49,4 @@ jobs:
           --trigger-http \
           --allow-unauthenticated \
           --entry-point TelegramWebhookHandler \
-          --region us-central1
+          --region us-central1 
