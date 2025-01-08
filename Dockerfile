@@ -1,10 +1,20 @@
-FROM golang:1.23
+# Используем базовый образ Golang
+FROM golang:1.20-alpine
 
+# Устанавливаем рабочую директорию
 WORKDIR /app
+
+# Копируем файлы в контейнер
+COPY go.mod go.sum ./
+RUN go mod download
 
 COPY . .
 
-RUN go mod tidy
-RUN go build -o main .
+# Сборка приложения
+RUN go build -o bot .
 
-CMD ["./main"]
+# Устанавливаем порт
+ENV PORT=8080
+
+# Запускаем приложение
+CMD ["./bot"]

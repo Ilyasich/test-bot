@@ -13,7 +13,6 @@ import (
 
 var bot *tgbotapi.BotAPI
 
-
 func main() {
 	http.HandleFunc("/", TelegramWebhookHandler)
 
@@ -27,7 +26,6 @@ func main() {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }
-
 
 func init() {
 	// Загружаем переменные окружения
